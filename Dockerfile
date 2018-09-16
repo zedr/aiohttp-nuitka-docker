@@ -1,15 +1,12 @@
-FROM library/python:alpine3.7
-
-ENV PYTHONPATH /app
+FROM library/python:3.7-slim
 
 COPY requirements.txt /app/
-COPY dist/*.whl /app/
+COPY main.exe /usr/local/bin/
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt
-RUN pip install *.whl
+RUN pip3.7 install -r requirements.txt
 
 EXPOSE 8080
 
-CMD aio-demo-serve
+CMD main.exe

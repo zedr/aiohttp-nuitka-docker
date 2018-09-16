@@ -1,35 +1,41 @@
 .PHONY: deps install clean tests dist
 
 ENV=.env
-SYS_PYTHON=$(shell which python3.7)
-SYS_PYTHON_VERSION=$(shell ${SYS_PYTHON} -V | cut -d " " -f 2 | cut -c1-3)
-SITE_PACKAGES=${ENV}/lib/python${SYS_PYTHON_VERSION}/site-packages
+PYTHON_VERSION=3.7
+PYTHON=python${PYTHON_VERSION}
+SITE_PACKAGES=${ENV}/lib/${PYTHON}/site-packages
 IN_ENV=. ${ENV}/bin/activate;
 
 default: ${ENV} deps
 
 ${ENV}:
 	@echo "Creating Python environment..." >&2
-	@${SYS_PYTHON} -m venv ${ENV}
+	@${PYTHON} -m venv ${ENV}
 	@echo "Updating pip..." >&2
-	@${IN_ENV} python -m pip install -U pip setuptools
+	@${IN_ENV} ${PYTHON} -m pip install -U pip setuptools
 
 ${SITE_PACKAGES}/aiohttp: ${ENV}
-	@${IN_ENV} python -m pip install -r requirements.txt
+	@${IN_ENV} ${PYTHON} -m pip install -r requirements.txt
+
+${SITE_PACKAGES}/aio-demo: ${ENV} install
 
 deps: ${SITE_PACKAGES}/aiohttp
 
 install: default
-	@${IN_ENV} python -m pip install -e .
+	@${IN_ENV} ${PYTHON} -m pip install -e .
 
 tests: default
-	@${IN_ENV} python tests.py
+	@${IN_ENV} ${PYTHON} tests.py
 
 wheel: ${ENV}
-	@${IN_ENV} python -m pip install -U wheel
-	@${IN_ENV} python setup.py bdist_wheel
+	@${IN_ENV} ${PYTHON} -m pip install -U wheel
+	@${IN_ENV} ${PYTHON} setup.py bdist_wheel
+
+binary: ${ENV}
+	@${IN_ENV} ${PYTHON} -m pip install -U nuitka
+	@${IN_ENV} ${PYTHON} -m nuitka --recurse-to=aiohttp main.py
 
 dist: wheel
 
 clean:
-	@rm -rf ${ENV} dist build __pycache__ *.egg-info
+	@rm -rf ${ENV} dist build __pycache__ *.egg-info main.build main.dist main.exe
