@@ -33,7 +33,7 @@ wheel: ${ENV}
 
 binary: ${ENV} deps
 	@${IN_ENV} ${PYTHON} -m pip install -U nuitka
-	@${IN_ENV} ${PYTHON} -m nuitka --recurse-to=aiohttp main.py
+	@${IN_ENV} ${PYTHON} -m nuitka --recurse-to=aiohttp --recurse-not-to=aiodns main.py
 
 dist: wheel
 
