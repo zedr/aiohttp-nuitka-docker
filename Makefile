@@ -31,7 +31,7 @@ wheel: ${ENV}
 	@${IN_ENV} ${PYTHON} -m pip install -U wheel
 	@${IN_ENV} ${PYTHON} setup.py bdist_wheel
 
-binary: ${ENV}
+binary: ${ENV} deps
 	@${IN_ENV} ${PYTHON} -m pip install -U nuitka
 	@${IN_ENV} ${PYTHON} -m nuitka --recurse-to=aiohttp main.py
 
