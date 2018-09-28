@@ -1,7 +1,7 @@
 .PHONY: deps install clean tests dist
 
 ENV=.env
-PYTHON_VERSION=3.7
+PYTHON_VERSION=3
 PYTHON=python${PYTHON_VERSION}
 SITE_PACKAGES=${ENV}/lib/${PYTHON}/site-packages
 IN_ENV=. ${ENV}/bin/activate;
